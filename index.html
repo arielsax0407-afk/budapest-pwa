@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="theme-color" content="#C8860A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Budapest">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<title>Budapest Journal 🇭🇺</title>
+<style>
+:root {
+  --ink: #1a1208;
+  --gold: #C8860A;
+  --gold-light: #E8A020;
+  --cream: #FAF5EC;
+  --sand: #E8DCC8;
+  --sand-dark: #C8B898;
+  --warm-gray: #8A7D6A;
+  --paper: #F5EED8;
+  --rust: #B85C2A;
+  --sage: #7A8C6A;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+body {
+  font-family: 'Lato', sans-serif;
+  background: var(--cream);
+  color: var(--ink);
+  min-height: 100dvh;
+  overscroll-behavior: none;
+}
+
+/* ── HERO COVER ─────────────────────────────── */
+.cover {
+  position: relative;
+  background: var(--ink);
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.cover-texture {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 30%, rgba(200,134,10,0.18) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 40% at 20% 80%, rgba(184,92,42,0.12) 0%, transparent 60%);
+}
+
+.cover-grain {
+  position: absolute; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  opacity: 0.3;
+}
+
+.cover-line-top {
+  position: absolute; top: 32px; left: 24px; right: 24px;
+  height: 1px; background: rgba(200,134,10,0.4);
+}
+.cover-line-bottom {
+  position: absolute; bottom: 32px; left: 24px; right: 24px;
+  height: 1px; background: rgba(200,134,10,0.4);
+}
+.cover-corner {
+  position: absolute; width: 20px; height: 20px;
+  border-color: rgba(200,134,10,0.6); border-style: solid;
+}
+.cover-corner.tl { top: 28px; left: 20px; border-width: 1px 0 0 1px; }
+.cover-corner.tr { top: 28px; right: 20px; border-width: 1px 1px 0 0; }
+.cover-corner.bl { bottom: 28px; left: 20px; border-width: 0 0 1px 1px; }
+.cover-corner.br { bottom: 28px; right: 20px; border-width: 0 1px 1px 0; }
+
+.cover-eyebrow {
+  font-family: 'Lato', sans-serif;
+  font-size: 10px; font-weight: 700; letter-spacing: 4px;
+  color: var(--gold); text-transform: uppercase;
+  margin-bottom: 20px; position: relative;
+}
+
+.cover-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(52px, 14vw, 88px);
+  font-weight: 700; line-height: 0.9;
+  color: var(--cream);
+  text-align: center; position: relative;
+  letter-spacing: -1px;
+}
+
+.cover-title em {
+  font-style: italic; color: var(--gold-light);
+  display: block; font-size: 0.55em;
+  margin-top: 8px; letter-spacing: 2px;
+}
+
+.cover-subtitle {
+  font-size: 13px; color: var(--sand-dark);
+  margin-top: 28px; letter-spacing: 1px;
+  position: relative;
+}
+
+.cover-flag {
+  font-size: 48px; position: relative;
+  margin-bottom: 16px;
+  filter: drop-shadow(0 4px 20px rgba(200,134,10,0.4));
+}
+
+.cover-cta {
+  position: absolute; bottom: 60px;
+  font-size: 11px; letter-spacing: 3px; color: var(--gold);
+  text-transform: uppercase; font-weight: 700;
+  animation: pulse-up 2s ease-in-out infinite;
+}
+@keyframes pulse-up {
+  0%,100% { opacity: 0.5; transform: translateY(0); }
+  50% { opacity: 1; transform: translateY(-4px); }
+}
+
+/* ── MAIN APP ────────────────────────────────── */
+.app { display: none; }
+.app.visible { display: block; }
+
+/* ── TOP NAV ─────────────────────────────────── */
+.topbar {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--ink);
+  padding: 0 20px;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 56px;
+  border-bottom: 1px solid rgba(200,134,10,0.3);
+}
+
+.topbar-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px; color: var(--cream);
+  font-weight: 600;
+}
+.topbar-title span { color: var(--gold); }
+
+.topbar-days {
+  display: flex; gap: 4px;
+}
+.topbar-day {
+  width: 32px; height: 32px; border-radius: 50%;
+  border: 1.5px solid rgba(200,134,10,0.4);
+  background: transparent; color: var(--sand-dark);
+  font-size: 12px; font-weight: 700;
+  cursor: pointer; transition: all 0.2s;
+  display: flex; align-items: center; justify-content: center;
+}
+.topbar-day.active {
+  background: var(--gold); border-color: var(--gold);
+  color: var(--ink);
+}
+.topbar-day.has-photos {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+/* ── DAY HEADER ──────────────────────────────── */
+.day-hero {
+  background: var(--ink);
+  padding: 20px 20px 28px;
+  position: relative; overflow: hidden;
+}
+
+.day-hero::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0;
+  height: 28px;
+  background: var(--cream);
+  border-radius: 28px 28px 0 0;
+}
+
+.day-hero-label {
+  font-size: 10px; letter-spacing: 4px; font-weight: 700;
+  color: var(--gold); text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.day-hero-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 32px; color: var(--cream);
+  font-weight: 700; line-height: 1.1;
+}
+
+.day-hero-date {
+  font-size: 12px; color: var(--warm-gray);
+  margin-top: 4px; letter-spacing: 0.5px;
+}
+
+.day-hero-count {
+  position: absolute; top: 20px; left: 20px;
+  font-size: 10px; letter-spacing: 2px;
+  color: var(--gold); font-weight: 700;
+}
+
+/* ── BODY ────────────────────────────────────── */
+.day-body { padding: 8px 16px 100px; background: var(--cream); }
+
+/* ── UPLOAD ──────────────────────────────────── */
+.upload-strip {
+  margin: 16px 0 20px;
+  border: 1.5px dashed var(--sand-dark);
+  border-radius: 16px;
+  padding: 20px;
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  cursor: pointer; transition: all 0.2s;
+  background: var(--paper);
+  position: relative;
+}
+.upload-strip:active { border-color: var(--gold); background: rgba(200,134,10,0.06); }
+.upload-strip input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+.upload-icon { font-size: 28px; }
+.upload-label { font-size: 13px; color: var(--warm-gray); font-weight: 400; }
+.upload-label strong { color: var(--gold); font-weight: 700; }
+
+/* ── PHOTOS MASONRY ─────────────────────────── */
+.photos-masonry {
+  columns: 2; column-gap: 10px;
+  margin-bottom: 20px;
+}
+
+.photo-item {
+  break-inside: avoid;
+  margin-bottom: 10px;
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+  background: var(--sand);
+  cursor: pointer;
+  animation: fadeIn 0.4s ease;
+}
+@keyframes fadeIn { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
+
+.photo-item img {
+  width: 100%; display: block;
+  object-fit: cover;
+}
+
+.photo-overlay {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  background: linear-gradient(transparent, rgba(26,18,8,0.85));
+  padding: 28px 10px 10px;
+}
+
+.photo-caption-text {
+  font-size: 11px; color: rgba(250,245,236,0.9);
+  line-height: 1.4; font-style: italic;
+}
+
+.photo-caption-loading {
+  font-size: 10px; color: rgba(200,134,10,0.8);
+  display: flex; align-items: center; gap: 4px;
+}
+
+.photo-delete {
+  position: absolute; top: 8px; right: 8px;
+  width: 26px; height: 26px; border-radius: 50%;
+  background: rgba(26,18,8,0.6); border: none;
+  color: rgba(250,245,236,0.8); font-size: 14px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  opacity: 0; transition: opacity 0.2s;
+}
+.photo-item:hover .photo-delete,
+.photo-item:active .photo-delete { opacity: 1; }
+
+/* ── DAY SUMMARY ─────────────────────────────── */
+.summary-section { margin: 4px 0 20px; }
+
+.summary-btn {
+  width: 100%; padding: 14px 20px;
+  border-radius: 14px;
+  border: 1.5px solid var(--gold);
+  background: transparent; color: var(--gold);
+  font-family: 'Lato', sans-serif;
+  font-size: 13px; font-weight: 700; letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer; transition: all 0.2s;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.summary-btn:active { background: rgba(200,134,10,0.1); transform: scale(0.98); }
+
+.summary-card {
+  margin-top: 14px;
+  background: var(--ink);
+  border-radius: 16px;
+  padding: 20px;
+  display: none;
+  position: relative; overflow: hidden;
+}
+.summary-card.visible { display: block; animation: fadeIn 0.4s ease; }
+
+.summary-card::before {
+  content: '"';
+  font-family: 'Playfair Display', serif;
+  font-size: 80px; line-height: 1;
+  color: rgba(200,134,10,0.2);
+  position: absolute; top: -8px; right: 16px;
+}
+
+.summary-card-label {
+  font-size: 9px; letter-spacing: 3px; color: var(--gold);
+  text-transform: uppercase; font-weight: 700; margin-bottom: 12px;
+}
+
+.summary-card-text {
+  font-family: 'Playfair Display', serif;
+  font-size: 15px; color: var(--cream);
+  line-height: 1.7; font-style: italic;
+}
+
+/* ── BOTTOM NAV ──────────────────────────────── */
+.bottom-nav {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: var(--ink);
+  border-top: 1px solid rgba(200,134,10,0.3);
+  padding: 10px 20px calc(10px + env(safe-area-inset-bottom));
+  display: flex; gap: 10px; z-index: 50;
+}
+
+.btn-journal {
+  flex: 1; padding: 12px;
+  border-radius: 12px;
+  border: 1.5px solid rgba(200,134,10,0.4);
+  background: transparent; color: var(--sand-dark);
+  font-family: 'Lato', sans-serif;
+  font-size: 12px; font-weight: 700; letter-spacing: 1px;
+  text-transform: uppercase; cursor: pointer; transition: all 0.2s;
+}
+.btn-journal:active { background: rgba(200,134,10,0.1); }
+
+.btn-journal.primary {
+  background: var(--gold); border-color: var(--gold);
+  color: var(--ink);
+}
+.btn-journal.primary:active { background: var(--gold-light); }
+
+/* ── FINAL JOURNAL VIEW ──────────────────────── */
+.journal-view {
+  display: none;
+  min-height: 100dvh;
+  background: var(--cream);
+}
+.journal-view.visible { display: block; }
+
+.journal-cover {
+  background: var(--ink);
+  padding: 60px 28px 48px;
+  text-align: center;
+  position: relative;
+}
+
+.journal-cover-eyebrow {
+  font-size: 10px; letter-spacing: 5px;
+  color: var(--gold); text-transform: uppercase;
+  font-weight: 700; margin-bottom: 16px;
+}
+
+.journal-cover-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 44px; color: var(--cream);
+  font-weight: 700; line-height: 1;
+  margin-bottom: 12px;
+}
+.journal-cover-title span { color: var(--gold); font-style: italic; }
+
+.journal-cover-sub {
+  font-size: 13px; color: var(--warm-gray); letter-spacing: 0.5px;
+}
+
+.journal-divider {
+  height: 1px; background: var(--sand);
+  margin: 32px 24px;
+}
+
+.journal-day-section { padding: 0 20px 40px; }
+
+.journal-day-label {
+  font-size: 10px; letter-spacing: 4px; font-weight: 700;
+  color: var(--gold); text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.journal-day-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 26px; font-weight: 700; color: var(--ink);
+  margin-bottom: 16px; line-height: 1.1;
+}
+
+.journal-photos-strip {
+  display: flex; gap: 8px; overflow-x: auto;
+  scrollbar-width: none; margin-bottom: 16px;
+  padding-bottom: 4px;
+}
+.journal-photos-strip::-webkit-scrollbar { display: none; }
+
+.journal-photo-thumb {
+  flex-shrink: 0;
+  width: 110px; height: 140px;
+  border-radius: 10px; overflow: hidden;
+  position: relative;
+}
+.journal-photo-thumb img {
+  width: 100%; height: 100%; object-fit: cover;
+}
+.journal-photo-thumb-cap {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  background: linear-gradient(transparent, rgba(26,18,8,0.8));
+  padding: 16px 6px 6px;
+  font-size: 9px; color: rgba(250,245,236,0.9);
+  font-style: italic; line-height: 1.3;
+}
+
+.journal-day-text {
+  font-family: 'Playfair Display', serif;
+  font-size: 15px; line-height: 1.8;
+  color: var(--ink); font-style: italic;
+  padding: 16px 0 0;
+  border-top: 1px solid var(--sand);
+}
+
+.journal-final-summary {
+  margin: 0 20px 40px;
+  background: var(--ink);
+  border-radius: 20px; padding: 28px;
+  position: relative; overflow: hidden;
+}
+.journal-final-summary::before {
+  content: '';
+  position: absolute;
+  top: -20px; right: -20px;
+  width: 100px; height: 100px;
+  border-radius: 50%;
+  background: rgba(200,134,10,0.15);
+}
+
+.journal-final-label {
+  font-size: 9px; letter-spacing: 4px; color: var(--gold);
+  text-transform: uppercase; font-weight: 700; margin-bottom: 12px;
+}
+
+.journal-final-text {
+  font-family: 'Playfair Display', serif;
+  font-size: 16px; color: var(--cream);
+  line-height: 1.8; font-style: italic;
+}
+
+.journal-back-btn {
+  display: block; width: calc(100% - 40px);
+  margin: 0 20px 40px;
+  padding: 14px;
+  border-radius: 14px;
+  border: 1.5px solid rgba(200,134,10,0.5);
+  background: transparent; color: var(--gold);
+  font-family: 'Lato', sans-serif;
+  font-size: 12px; font-weight: 700; letter-spacing: 2px;
+  text-transform: uppercase; cursor: pointer;
+  text-align: center;
+}
+
+/* ── LOADING STATES ───────────────────────────── */
+.spinner {
+  width: 14px; height: 14px;
+  border: 2px solid rgba(200,134,10,0.3);
+  border-top-color: var(--gold);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: inline-block;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.generating-banner {
+  background: rgba(200,134,10,0.1);
+  border: 1px solid rgba(200,134,10,0.3);
+  border-radius: 12px; padding: 14px 16px;
+  display: none; align-items: center; gap: 10px;
+  margin-bottom: 16px;
+}
+.generating-banner.visible { display: flex; }
+.generating-banner-text { font-size: 13px; color: var(--gold); font-weight: 400; }
+
+/* ── INSTALL PROMPT ──────────────────────────── */
+.install-toast {
+  position: fixed; bottom: 80px; left: 16px; right: 16px;
+  background: var(--ink);
+  border: 1px solid rgba(200,134,10,0.5);
+  border-radius: 16px; padding: 16px;
+  display: none; align-items: center; gap: 12px;
+  z-index: 200; animation: slideUp 0.3s ease;
+}
+.install-toast.visible { display: flex; }
+@keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+.install-toast-text { flex: 1; font-size: 13px; color: var(--cream); line-height: 1.4; }
+.install-toast-btn {
+  padding: 8px 16px; border-radius: 10px;
+  background: var(--gold); border: none;
+  color: var(--ink); font-weight: 700; font-size: 12px;
+  cursor: pointer; white-space: nowrap;
+}
+.install-toast-close {
+  color: var(--warm-gray); background: none; border: none;
+  font-size: 18px; cursor: pointer; padding: 0 4px;
+}
+
+/* ── EMPTY STATE ─────────────────────────────── */
+.empty-state {
+  text-align: center; padding: 40px 20px;
+  display: none;
+}
+.empty-state.visible { display: block; }
+.empty-state-icon { font-size: 48px; margin-bottom: 12px; }
+.empty-state-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px; color: var(--ink); margin-bottom: 8px;
+}
+.empty-state-sub { font-size: 13px; color: var(--warm-gray); line-height: 1.5; }
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<div class="cover" id="cover" onclick="openApp()">
+  <div class="cover-texture"></div>
+  <div class="cover-grain"></div>
+  <div class="cover-line-top"></div>
+  <div class="cover-line-bottom"></div>
+  <div class="cover-corner tl"></div>
+  <div class="cover-corner tr"></div>
+  <div class="cover-corner bl"></div>
+  <div class="cover-corner br"></div>
+
+  <div class="cover-eyebrow">Travel Journal · 2025</div>
+  <div class="cover-flag">🇭🇺</div>
+  <div class="cover-title">
+    Budapest
+    <em>& us</em>
+  </div>
+  <div class="cover-subtitle">4 ימים · יומן אישי</div>
+  <div class="cover-cta">לחץ לפתיחה ↓</div>
+</div>
+
+<!-- MAIN APP -->
+<div class="app" id="app">
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="topbar-title">Buda<span>pest</span></div>
+    <div class="topbar-days">
+      <button class="topbar-day active" id="tab-1" onclick="switchDay(1)">1</button>
+      <button class="topbar-day" id="tab-2" onclick="switchDay(2)">2</button>
+      <button class="topbar-day" id="tab-3" onclick="switchDay(3)">3</button>
+      <button class="topbar-day" id="tab-4" onclick="switchDay(4)">4</button>
+    </div>
+  </div>
+
+  <!-- DAY PANELS -->
+  <div id="day-panels">
+    <!-- rendered by JS -->
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <div class="bottom-nav">
+    <button class="btn-journal" onclick="showJournal()">📖 יומן</button>
+    <label class="btn-journal primary" style="display:flex;align-items:center;justify-content:center;gap:6px;" id="upload-label-global">
+      📷 תמונות
+      <input type="file" accept="image/*" multiple style="display:none;" id="global-upload" onchange="handleGlobalUpload(this)">
+    </label>
+  </div>
+</div>
+
+<!-- JOURNAL VIEW -->
+<div class="journal-view" id="journal-view">
+  <!-- rendered by JS -->
+</div>
+
+<!-- INSTALL TOAST -->
+<div class="install-toast" id="install-toast">
+  <div class="install-toast-text">התקן כאפליקציה על הנייד לשימוש ללא אינטרנט</div>
+  <button class="install-toast-btn" onclick="installPWA()">התקן</button>
+  <button class="install-toast-close" onclick="dismissInstall()">✕</button>
+</div>
+
+<script>
+const DAY_NAMES = ['', 'ראשון', 'שני', 'שלישי', 'רביעי'];
+const DAY_SUBTITLES = ['', 'הגעה ורשמים ראשונים', 'לב העיר', 'פרלים נסתרים', 'פרידה מהנהר'];
+let currentDay = 1;
+let deferredPrompt = null;
+
+// ── STATE ──────────────────────────────────────
+const state = {
+  photos: { 1: [], 2: [], 3: [], 4: [] },
+  summaries: { 1: '', 2: '', 3: '', 4: '' }
+};
+
+function saveState() {
+  try {
+    const toSave = {
+      summaries: state.summaries,
+      photos: {}
+    };
+    for (let d = 1; d <= 4; d++) {
+      toSave.photos[d] = state.photos[d].map(p => ({
+        id: p.id, url: p.url, caption: p.caption, b64: p.b64
+      }));
+    }
+    localStorage.setItem('budapest-journal', JSON.stringify(toSave));
+  } catch(e) {}
+}
+
+function loadState() {
+  try {
+    const saved = localStorage.getItem('budapest-journal');
+    if (!saved) return;
+    const data = JSON.parse(saved);
+    state.summaries = data.summaries || { 1:'',2:'',3:'',4:'' };
+    for (let d = 1; d <= 4; d++) {
+      state.photos[d] = (data.photos?.[d] || []);
+    }
+  } catch(e) {}
+}
+
+// ── COVER → APP ────────────────────────────────
+function openApp() {
+  document.getElementById('cover').style.display = 'none';
+  const app = document.getElementById('app');
+  app.classList.add('visible');
+  renderAllDays();
+  updateAllTabs();
+  showDayPanel(currentDay);
+  setTimeout(maybeShowInstallToast, 3000);
+}
+
+// ── DAY PANELS ─────────────────────────────────
+function renderAllDays() {
+  const container = document.getElementById('day-panels');
+  container.innerHTML = '';
+  for (let d = 1; d <= 4; d++) {
+    const panel = document.createElement('div');
+    panel.id = 'panel-' + d;
+    panel.style.display = 'none';
+    panel.innerHTML = `
+      <div class="day-hero">
+        <div class="day-hero-count" id="count-${d}"></div>
+        <div class="day-hero-label">יום ${DAY_NAMES[d]}</div>
+        <div class="day-hero-title">${DAY_SUBTITLES[d]}</div>
+        <div class="day-hero-date">Budapest, 2025</div>
+      </div>
+      <div class="day-body">
+        <label class="upload-strip">
+          <input type="file" accept="image/*" multiple onchange="handlePhotos(${d}, this)">
+          <div class="upload-icon">📷</div>
+          <div class="upload-label">הוסף תמונות <strong>מהיום הזה</strong></div>
+        </label>
+        <div class="generating-banner" id="gen-banner-${d}">
+          <div class="spinner"></div>
+          <div class="generating-banner-text">מייצר כיתובים...</div>
+        </div>
+        <div class="empty-state" id="empty-${d}">
+          <div class="empty-state-icon">🌅</div>
+          <div class="empty-state-title">יום ${d} מחכה לתמונות</div>
+          <div class="empty-state-sub">העלה תמונות והאפליקציה תכתוב את הסיפור</div>
+        </div>
+        <div class="photos-masonry" id="grid-${d}"></div>
+        <div class="summary-section">
+          <button class="summary-btn" onclick="generateDaySummary(${d})" id="sum-btn-${d}">
+            ✦ סכם את יום ${d}
+          </button>
+          <div class="summary-card" id="summary-card-${d}">
+            <div class="summary-card-label">יום ${DAY_NAMES[d]} · סיכום</div>
+            <div class="summary-card-text" id="summary-text-${d}"></div>
+          </div>
+        </div>
+      </div>
+    `;
+    container.appendChild(panel);
+
+    // Restore existing photos
+    for (const photo of state.photos[d]) {
+      renderPhotoCard(d, photo);
+    }
+    if (state.summaries[d]) {
+      document.getElementById('summary-text-' + d).textContent = state.summaries[d];
+      document.getElementById('summary-card-' + d).classList.add('visible');
+    }
+    updateDayCount(d);
+  }
+  updateEmptyStates();
+}
+
+function showDayPanel(d) {
+  for (let i = 1; i <= 4; i++) {
+    const p = document.getElementById('panel-' + i);
+    if (p) p.style.display = i === d ? 'block' : 'none';
+  }
+  currentDay = d;
+  document.getElementById('global-upload').value = '';
+}
+
+function switchDay(d) {
+  document.querySelectorAll('.topbar-day').forEach((t,i) => t.classList.toggle('active', i===d-1));
+  showDayPanel(d);
+}
+
+function updateAllTabs() {
+  for (let d = 1; d <= 4; d++) {
+    const tab = document.getElementById('tab-' + d);
+    if (state.photos[d].length > 0) tab.classList.add('has-photos');
+    else tab.classList.remove('has-photos');
+  }
+}
+
+function updateDayCount(d) {
+  const n = state.photos[d].length;
+  const el = document.getElementById('count-' + d);
+  if (el) el.textContent = n > 0 ? n + ' תמונות' : '';
+}
+
+function updateEmptyStates() {
+  for (let d = 1; d <= 4; d++) {
+    const el = document.getElementById('empty-' + d);
+    if (el) el.classList.toggle('visible', state.photos[d].length === 0);
+  }
+}
+
+// ── PHOTOS ─────────────────────────────────────
+async function handlePhotos(day, input) {
+  const files = Array.from(input.files);
+  if (!files.length) return;
+  showGenBanner(day, true);
+  for (const file of files) {
+    const url = URL.createObjectURL(file);
+    const b64 = await toBase64(file);
+    const id = Date.now() + '-' + Math.random().toString(36).slice(2);
+    const photo = { id, url, b64, caption: '' };
+    state.photos[day].push(photo);
+    renderPhotoCard(day, photo);
+    updateDayCount(day);
+    updateAllTabs();
+    updateEmptyStates();
+    saveState();
+    generateCaption(day, photo);
+  }
+  input.value = '';
+}
+
+function handleGlobalUpload(input) {
+  handlePhotos(currentDay, input);
+}
+
+function renderPhotoCard(day, photo) {
+  const grid = document.getElementById('grid-' + day);
+  if (!grid) return;
+  const div = document.createElement('div');
+  div.className = 'photo-item';
+  div.id = 'pcard-' + photo.id;
+  div.innerHTML = `
+    <img src="${photo.url}" alt="תמונה מיום ${day}" loading="lazy">
+    <div class="photo-overlay">
+      ${photo.caption
+        ? `<div class="photo-caption-text">${photo.caption}</div>`
+        : `<div class="photo-caption-loading"><span class="spinner"></span></div>`
+      }
+    </div>
+    <button class="photo-delete" onclick="deletePhoto(${day},'${photo.id}')" aria-label="מחק">✕</button>
+  `;
+  grid.appendChild(div);
+}
+
+function deletePhoto(day, id) {
+  state.photos[day] = state.photos[day].filter(p => p.id !== id);
+  const card = document.getElementById('pcard-' + id);
+  if (card) { card.style.animation = 'none'; card.style.opacity = '0'; setTimeout(() => card.remove(), 200); }
+  updateDayCount(day);
+  updateAllTabs();
+  updateEmptyStates();
+  saveState();
+}
+
+async function generateCaption(day, photo) {
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 80,
+        messages: [{
+          role: 'user',
+          content: [
+            { type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: photo.b64 } },
+            { type: 'text', text: 'כיתוב קצר ורגשי לתמונה הזו בעברית, 1 משפט קצר, כמו יומן אישי. ללא פיסוק מיוחד.' }
+          ]
+        }]
+      })
+    });
+    const data = await res.json();
+    const caption = data.content?.[0]?.text?.trim() || 'רגע שלא נשכח';
+    photo.caption = caption;
+
+    const card = document.getElementById('pcard-' + photo.id);
+    if (card) {
+      const overlay = card.querySelector('.photo-overlay');
+      overlay.innerHTML = `<div class="photo-caption-text">${caption}</div>`;
+    }
+    saveState();
+  } catch(e) {
+    photo.caption = 'רגע שלא נשכח';
+    saveState();
+  }
+
+  // Check if all pending captions in this day are done
+  const pending = state.photos[day].filter(p => !p.caption).length;
+  if (pending === 0) showGenBanner(day, false);
+}
+
+function showGenBanner(day, show) {
+  const el = document.getElementById('gen-banner-' + day);
+  if (el) el.classList.toggle('visible', show);
+}
+
+function toBase64(file) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = () => res(r.result.split(',')[1]);
+    r.onerror = rej;
+    r.readAsDataURL(file);
+  });
+}
+
+// ── DAY SUMMARY ───────────────────────────────
+async function generateDaySummary(day) {
+  const photos = state.photos[day];
+  if (!photos.length) { alert('הוסף תמונות ליום ' + day + ' קודם'); return; }
+  const btn = document.getElementById('sum-btn-' + day);
+  btn.innerHTML = '<span class="spinner" style="border-color:rgba(200,134,10,0.3);border-top-color:var(--gold)"></span> מייצר...';
+  btn.disabled = true;
+
+  const captions = photos.map((p,i) => (p.caption || 'תמונה מהיום')).join(' · ');
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 200,
+        messages: [{
+          role: 'user',
+          content: `כתוב סיכום יום ${day} מהטיול שלנו בבודפשט בעברית. 3 משפטים, גוף ראשון רבים, חם ורגשי, כמו יומן מסע. מהתמונות: ${captions}`
+        }]
+      })
+    });
+    const data = await res.json();
+    const summary = data.content?.[0]?.text?.trim() || '';
+    state.summaries[day] = summary;
+    document.getElementById('summary-text-' + day).textContent = summary;
+    document.getElementById('summary-card-' + day).classList.add('visible');
+    saveState();
+  } catch(e) {}
+
+  btn.innerHTML = `✦ סכם את יום ${day}`;
+  btn.disabled = false;
+}
+
+// ── JOURNAL VIEW ──────────────────────────────
+async function showJournal() {
+  const totalPhotos = [1,2,3,4].reduce((a,d) => a + state.photos[d].length, 0);
+  if (!totalPhotos) { alert('הוסף תמונות לפחות ליום אחד תחילה'); return; }
+
+  const view = document.getElementById('journal-view');
+  view.classList.add('visible');
+  document.getElementById('app').style.display = 'none';
+
+  // Build journal HTML
+  let html = `
+    <div class="journal-cover">
+      <div class="journal-cover-eyebrow">Travel Journal · 2025</div>
+      <div class="journal-cover-title">Buda<span>pest</span></div>
+      <div class="journal-cover-sub">הטיול שלנו · 4 ימים</div>
+    </div>
+  `;
+
+  for (let d = 1; d <= 4; d++) {
+    if (!state.photos[d].length) continue;
+    html += `<div class="journal-divider"></div>`;
+    html += `<div class="journal-day-section">`;
+    html += `<div class="journal-day-label">יום ${DAY_NAMES[d]}</div>`;
+    html += `<div class="journal-day-title">${DAY_SUBTITLES[d]}</div>`;
+
+    // Photo strip
+    html += `<div class="journal-photos-strip">`;
+    for (const p of state.photos[d]) {
+      html += `<div class="journal-photo-thumb">
+        <img src="${p.url}" alt="תמונה">
+        <div class="journal-photo-thumb-cap">${p.caption || ''}</div>
+      </div>`;
+    }
+    html += `</div>`;
+
+    if (state.summaries[d]) {
+      html += `<div class="journal-day-text">${state.summaries[d]}</div>`;
+    }
+    html += `</div>`;
+  }
+
+  // Final summary
+  html += `<div class="journal-divider"></div>`;
+  const finalBox = document.createElement('div');
+  finalBox.className = 'journal-final-summary';
+  finalBox.innerHTML = `
+    <div class="journal-final-label">✦ סיכום הטיול</div>
+    <div class="journal-final-text" id="final-summary-text">
+      <span class="spinner" style="border-color:rgba(200,134,10,0.3);border-top-color:#C8860A"></span>
+      מייצר סיכום...
+    </div>
+  `;
+  html += `<button class="journal-back-btn" onclick="closeJournal()">← חזור</button>`;
+
+  view.innerHTML = html;
+  view.appendChild(finalBox);
+
+  const backBtn = document.createElement('button');
+  backBtn.className = 'journal-back-btn';
+  backBtn.textContent = '← חזרה לאפליקציה';
+  backBtn.onclick = closeJournal;
+  view.appendChild(backBtn);
+
+  generateFinalSummary();
+}
+
+async function generateFinalSummary() {
+  const allSummaries = [1,2,3,4]
+    .filter(d => state.summaries[d])
+    .map(d => `יום ${d}: ${state.summaries[d]}`)
+    .join('\n\n');
+
+  const allCaptions = [1,2,3,4]
+    .filter(d => state.photos[d].length)
+    .map(d => `יום ${d}: ${state.photos[d].map(p=>p.caption).filter(Boolean).join(', ')}`)
+    .join('\n');
+
+  const content = allSummaries || allCaptions;
+  if (!content) return;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 300,
+        messages: [{
+          role: 'user',
+          content: `כתוב פסקה אחת רגשית וחמה שמסכמת את כל הטיול בבודפשט — 4 ימים. גוף ראשון רבים, כמו סיום יומן מסע. לא יותר מ-4 משפטים. מהחומר: ${content}`
+        }]
+      })
+    });
+    const data = await res.json();
+    const text = data.content?.[0]?.text?.trim() || '';
+    const el = document.getElementById('final-summary-text');
+    if (el) el.textContent = text;
+  } catch(e) {
+    const el = document.getElementById('final-summary-text');
+    if (el) el.textContent = 'טיול שלא ישכח לעולם.';
+  }
+}
+
+function closeJournal() {
+  document.getElementById('journal-view').classList.remove('visible');
+  document.getElementById('app').style.display = 'block';
+}
+
+// ── PWA INSTALL ────────────────────────────────
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+});
+
+function maybeShowInstallToast() {
+  if (deferredPrompt && !localStorage.getItem('install-dismissed')) {
+    document.getElementById('install-toast').classList.add('visible');
+  }
+}
+
+function installPWA() {
+  document.getElementById('install-toast').classList.remove('visible');
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(() => { deferredPrompt = null; });
+  }
+}
+
+function dismissInstall() {
+  document.getElementById('install-toast').classList.remove('visible');
+  localStorage.setItem('install-dismissed', '1');
+}
+
+// ── SERVICE WORKER ─────────────────────────────
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').catch(() => {});
+}
+
+// ── INIT ───────────────────────────────────────
+loadState();
+</script>
+</body>
+</html>
